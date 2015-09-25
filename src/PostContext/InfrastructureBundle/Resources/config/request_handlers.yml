@@ -1,0 +1,14 @@
+services:
+    post_context.infrastructure.request_handler:
+        class: PostContext\InfrastructureBundle\RequestHandler\Middleware\EventRequestHandler
+        arguments:
+            - @event_dispatcher
+            - @post_context.infrastractrue.guzzle_request_handler
+
+    post_context.infrastractrue.guzzle_request_handler:
+        class: PostContext\InfrastructureBundle\RequestHandler\Middleware\GuzzleRequestHandler
+        arguments:
+            - @post_context.infrastructure.guzzle_http_client
+
+    post_context.infrastructure.guzzle_http_client:
+        class: GuzzleHttp\Client

@@ -1,0 +1,4 @@
+post_context:
+    prefix: /api
+    type: rest
+    resource: post_context.controller.create_post

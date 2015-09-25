@@ -1,0 +1,9 @@
+services:
+    post_context.infrastructure.channel_repository:
+        class: PostContext\InfrastructureBundle\Repository\InMemory\ChannelRepository
+
+    post_context.infrastructure.post_repository:
+        class: PostContext\InfrastructureBundle\Repository\InMemory\PostRepository
+
+    post_context.infrastructure.publisher_repository:
+       class: PostContext\InfrastructureBundle\Repository\InMemory\PublisherRepository

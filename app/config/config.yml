@@ -1,0 +1,57 @@
+# app/config/config.yml
+framework:
+    secret: %secret%
+    router:
+        resource: "%kernel.root_dir%/config/routing_%kernel.environment%.yml"
+        strict_requirements: %kernel.debug%
+    templating:
+        engines: ['twig']
+    profiler:
+        enabled: %kernel.debug%
+
+monolog:
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: %monolog_action_level%
+            handler:      nested
+        nested:
+            type:  stream
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+
+# config.yml
+jms_serializer:
+    property_naming:
+        separator:  _
+        lower_case: true
+    metadata:
+        auto_detection: true
+
+        directories:
+            Domain:
+                namespace_prefix: "PostContext\\Domain"
+                path: "@PresentationBundle/Resources/config/presentation/serializer/"
+
+sensio_framework_extra:
+    view: { annotations: false }
+
+fos_rest:
+    view:
+        view_response_listener: force
+    format_listener:
+        rules:
+            - { path: ^/, priorities: [ json ], fallback_format: json, prefer_extension: false }
+    exception:
+        enabled: true
+        codes:
+            'PostContext\Domain\Exception\PublisherMessageNotFoundException': HTTP_FORBIDDEN
+            'PostContext\Domain\Exception\PublisherNotAuthorizedException': HTTP_FORBIDDEN
+            'PostContext\Domain\Exception\ChannelNotFoundException': HTTP_NOT_FOUND
+    allowed_methods_listener: true
+    access_denied_listener:
+        json: true
+    body_listener: false
+    routing_loader:
+        default_format: json
+        include_format: false

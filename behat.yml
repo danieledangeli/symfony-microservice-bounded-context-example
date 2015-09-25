@@ -1,0 +1,14 @@
+default:
+  suites:
+    default:
+        contexts:
+            - PublisherContext:
+                  kernel: '@kernel'
+
+        filters:
+            tags: "~@skipped"
+  extensions:
+    Behat\Symfony2Extension:
+        kernel:
+            path: app/AppKernel.php
+            class: AppKernel
