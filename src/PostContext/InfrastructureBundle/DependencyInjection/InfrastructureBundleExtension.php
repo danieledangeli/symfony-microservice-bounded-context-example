@@ -27,5 +27,6 @@ class InfrastructureBundleExtension extends Extension
         $loader->load('request_handlers.yml');
         $loader->load('gateways.yml');
         $loader->load('repositories.yml');
+        $loader->load('circuit_breaker.yml');
     }
 }

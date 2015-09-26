@@ -1,0 +1,19 @@
+services:
+    cache:
+        class: Doctrine\Common\Cache\FilesystemCache
+        arguments: [%kernel.cache_dir%]
+        extension: ".circuit.cache"
+
+    circuit_breaker.filesystem_cache.factory:
+        class: PostContext\InfrastructureBundle\CircuitBreaker\Factory
+
+    circuit_breaker_file_system:
+        class: Ejsmont\CircuitBreakerBundle\Core\CircuitBreaker
+        factory: ["@circuit_breaker.filesystem_cache.factory", getDoctrineCacheInstance]
+        arguments: [@cache, 30, 60]
+
+
+    post_context.infrastracture.circuit_breaker:
+        class: PostContext\InfrastructureBundle\CircuitBreaker\CircuitBreaker
+        arguments:
+            - @circuit_breaker_file_system

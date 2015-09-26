@@ -29,8 +29,6 @@ class Publisher
     public function publishOnChannel(Channel $channel, BodyMessage $message)
     {
         $post = new Message($this->getId(), $channel->getId(), $message);
-        $channel->addPost($post);
-
         $this->posts->add($post);
 
         return $post;

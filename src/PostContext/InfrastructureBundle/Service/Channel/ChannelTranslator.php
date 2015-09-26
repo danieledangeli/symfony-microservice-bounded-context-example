@@ -14,17 +14,17 @@ class ChannelTranslator
 {
     public function toChannelFromResponse(Response $response)
     {
-        if (200 !== $response->getStatusCode() || 404 === $response->getStatusCode()) {
-            throw new UnableToProcessResponseFromService($response);
-        }
-
         if (200 === $response->getStatusCode()) {
-            $contentArray = json_decode($response->getBody(), true);
+            $contentArray = $response->getBody();
             return new Channel(new ChannelId($contentArray["id"]));
         }
 
         if (404 === $response->getStatusCode()) {
             throw new ChannelNotFoundException;
         }
+
+
+        throw new UnableToProcessResponseFromService($response);
+
     }
 }

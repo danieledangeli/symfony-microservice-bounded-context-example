@@ -50,9 +50,11 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
     {
         $this->channelId = $channelId;
 
-        /*$this->mock->addResponse(
-            new \GuzzleHttp\Message\Response(200, [], Stream::factory(sprintf("{\"id\" : \"%s\"}", $this->channelId)))
-        );*/
+        $response = new \GuzzleHttp\Message\Response(200, [], Stream::factory(sprintf("{\"id\" : \"%s\"}", $this->channelId)));
+        $response->addHeader("Content-Type", "application/json");
+        $this->mock->addResponse(
+            $response
+        );
     }
 
     /**
@@ -60,13 +62,14 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
      */
     public function thePublisherIsAuthorizedToPublishMessageOnTheChannel()
     {
-        /*$this->mock->addResponse(
-            new \GuzzleHttp\Message\Response(200, [], Stream::factory(
-                sprintf("{\"publisher_id\" : \"%s\", \"channel_id\": %s, \"authorized\": %s}",
-                    $this->publisherId,
-                    $this->channelId,
-                    "true")
-            )));*/
+        $response = new \GuzzleHttp\Message\Response(200,[], Stream::factory(
+            sprintf("{\"publisher_id\" : \"%s\", \"channel_id\": %s, \"authorized\": %s}",
+                $this->publisherId,
+                $this->channelId,
+                "true")
+        ));
+        $response->addHeader("Content-Type", "application/json");
+        $this->mock->addResponse($response);
     }
 
     /**
@@ -76,6 +79,7 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
     {
         if($this->mock->count() > 0) {
             $container = $this->getClient()->getContainer();
+
             /** @var Client $httpClient */
             $httpClient = $container->get('post_context.infrastructure.guzzle_http_client');
             $httpClient->getEmitter()->attach($this->mock);
@@ -115,7 +119,7 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
     public function thePublisherIsNotAuthorizedToPublishMessageOnTheChannel()
     {
         $this->mock->addResponse(
-            new \GuzzleHttp\Message\Response(200, [], Stream::factory(
+            new \GuzzleHttp\Message\Response(200, ["Content-Type" => "application/json"], Stream::factory(
                 sprintf("{\"publisher_id\" : \"%s\", \"channel_id\": %s, \"authorized\": %s}",
                     $this->publisherId,
                     $this->channelId,

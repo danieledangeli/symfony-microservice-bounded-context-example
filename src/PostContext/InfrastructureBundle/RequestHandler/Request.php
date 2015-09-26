@@ -2,7 +2,7 @@
 
 namespace PostContext\InfrastructureBundle\RequestHandler;
 
-class Request
+final class Request
 {
     private $verb;
     private $uri;

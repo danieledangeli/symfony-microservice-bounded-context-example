@@ -1,0 +1,6 @@
+{
+  "id" : "1",
+  "publisher_id" : "%s",
+  "channel_id": "%s",
+  "authorized": %s
+}

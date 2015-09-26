@@ -3,6 +3,7 @@ services:
         class: PostContext\InfrastructureBundle\Service\Channel\ChannelGateway
         arguments:
             - @post_context.infrastructure.channel_adapter
+            - @post_context.infrastracture.circuit_breaker
 
     post_context.infrastructure.channel_authorization_gateway:
         class: PostContext\InfrastructureBundle\Service\ChannelAuthorization\ChannelAuthorizationGateway

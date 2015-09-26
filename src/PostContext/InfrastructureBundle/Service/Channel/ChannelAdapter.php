@@ -23,6 +23,13 @@ class ChannelAdapter
         $this->channelUri = $channelUri;
     }
 
+    /**
+     * @param ChannelId $channelId
+     * @return \PostContext\Domain\Channel
+     *
+     * @throws \PostContext\Domain\Exception\ChannelNotFoundException
+     * @throws \PostContext\InfrastructureBundle\Exception\UnableToProcessResponseFromService
+     */
     public function toChannel(ChannelId $channelId)
     {
         $request = new Request("GET", sprintf("%s/api/channels/%s", $this->channelUri, $channelId));

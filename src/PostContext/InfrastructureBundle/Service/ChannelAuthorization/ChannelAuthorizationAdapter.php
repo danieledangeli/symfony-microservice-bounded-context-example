@@ -38,8 +38,8 @@ class ChannelAuthorizationAdapter
         $request->addHeader("Accept", "application/json");
         $response = $this->requestHandler->handle($request);
 
-        return $channelAdapter->toChannelAuthorizationFromResponseBody(
-            $response->getBody()
+        return $channelAdapter->toChannelAuthorizationFromResponse(
+            $response
         );
     }
 }

@@ -10,8 +10,6 @@ class JsonResponseListener
     public function onReceivedResponse(ReceivedResponse $receivedResponse)
     {
         $response = $receivedResponse->getResponse();
-        $contentType = $response->getHeader('Content-Type');
-
         if (false === strpos($response->getHeader('Content-Type'), 'application/json')) {
             return;
         }

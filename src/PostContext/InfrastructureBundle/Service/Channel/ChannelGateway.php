@@ -7,16 +7,21 @@ use PostContext\Domain\Exception\ServiceFailureException;
 use PostContext\Domain\Exception\ServiceNotAvailableException;
 use PostContext\Domain\Gateway\ChannelGatewayInterface;
 use PostContext\Domain\ValueObjects\ChannelId;
+use PostContext\InfrastructureBundle\CircuitBreaker\PostContextCircuitBreakerInterface;
 use PostContext\InfrastructureBundle\Exception\UnableToProcessResponseFromService;
 use PostContext\InfrastructureBundle\RequestHandler\Response;
 
 class ChannelGateway implements ChannelGatewayInterface
 {
     private $channelAdapter;
+    private $circuitBreaker;
+    private $serviceUniqueName;
 
-    public function __construct(ChannelAdapter $channelAdapter)
+    public function __construct(ChannelAdapter $channelAdapter, PostContextCircuitBreakerInterface $circuitBreaker)
     {
         $this->channelAdapter = $channelAdapter;
+        $this->circuitBreaker = $circuitBreaker;
+        $this->serviceUniqueName = "channel.service";
     }
 
     /**
@@ -27,22 +32,31 @@ class ChannelGateway implements ChannelGatewayInterface
      */
     public function getChannel(ChannelId $channelId)
     {
-        try {
-            $channel = $this->channelAdapter->toChannel($channelId);
+        if($this->circuitBreaker->isAvailable($this->serviceUniqueName)) {
+            try {
+                $channel = $this->channelAdapter->toChannel($channelId);
+                $this->circuitBreaker->reportSuccess($this->serviceUniqueName);
 
-            return  $channel;
-        } catch (UnableToProcessResponseFromService $e) {
-            $this->handleNotExpectedResponse($e->getResponse());
+                return  $channel;
+            } catch (UnableToProcessResponseFromService $e) {
+                $this->handleNotExpectedResponse($e->getResponse());
+            }
         }
+
+        $this->onServiceNotAvailable("The service is not available at the moment");
     }
 
     private function handleNotExpectedResponse(Response $response)
     {
-        if ($response->hasConnectionFailed()) {
+        $this->circuitBreaker->reportFailure($this->serviceUniqueName);
+
+        if($response->hasConnectionFailed()) {
             $this->onServiceNotAvailable("connection failed on channel service");
         }
 
-        $this->onServiceFailure(sprintf("The service channel has failed with message %s", $response->getBody()));
+        $this->onServiceFailure(
+            sprintf("The service %s has failed with message %s", $this->serviceUniqueName, $response->getBody())
+        );
     }
 
     /**
@@ -51,8 +65,6 @@ class ChannelGateway implements ChannelGatewayInterface
      */
     public function onServiceNotAvailable($message)
     {
-        //react to the service not available
-        //
         throw new ServiceNotAvailableException($message);
     }
 

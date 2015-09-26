@@ -2,7 +2,7 @@
 
 namespace PostContext\InfrastructureBundle\RequestHandler;
 
-class Response
+final class Response
 {
     private $statusCode;
     private $headers = array();
@@ -17,7 +17,7 @@ class Response
 
     public static function buildConnectionFailedResponse()
     {
-        $response = new self(-1);
+        $response = new self(0);
         $response->connectionFailed = true;
 
         return $response;
@@ -35,7 +35,12 @@ class Response
 
     public function getHeader($name)
     {
-        return (isset($this->headers[$name]) ? $this->headers[$name] : null);
+        $header = isset($this->headers[$name]) ? $this->headers[$name] : null;
+        if(null !== $header && is_array($header)) {
+            return $header[0];
+        }
+
+        return $header;
     }
 
     public function setBody($body)

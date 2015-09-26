@@ -10,5 +10,11 @@ services:
         arguments:
             - @post_context.infrastructure.guzzle_http_client
 
+    post_context.infrastractrue.json_response_listener:
+        class: PostContext\InfrastructureBundle\RequestHandler\Listener\JsonResponseListener
+        tags:
+            - { name: kernel.event_listener, event: request_handler.received_response, method: onReceivedResponse }
+
+
     post_context.infrastructure.guzzle_http_client:
         class: GuzzleHttp\Client
