@@ -52,7 +52,7 @@ class Publisher
 
         if (!$removed) {
             throw new PublisherMessageNotFoundException(
-                sprintf("The post id: %s is not owned by the publisher id %s",
+                sprintf("The message id: %s is not owned by the publisher id %s",
                     $postId,
                     $this->getId()
                 )

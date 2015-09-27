@@ -7,6 +7,7 @@ use PostContext\Domain\ValueObjects\ChannelId;
 class Channel
 {
     private $channelId;
+    private $closed;
 
     private $posts;
 
