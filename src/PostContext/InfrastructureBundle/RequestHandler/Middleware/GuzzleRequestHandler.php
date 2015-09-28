@@ -24,7 +24,7 @@ class GuzzleRequestHandler implements RequestHandler
      */
     public function handle(Request $request)
     {
-        $guzzleRequest = $this->client->createRequest($request->getVerb(),$request->getUri(), array(
+        $guzzleRequest = $this->client->createRequest($request->getVerb(), $request->getUri(), array(
             'headers' => $request->getHeaders(),
             'body' => $request->getBody(),
         ));

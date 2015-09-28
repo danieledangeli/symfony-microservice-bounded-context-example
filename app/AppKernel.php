@@ -9,10 +9,12 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         //ack for .env vars
-        //load the .env vars of required
+        //load the .env vars if required
         if($this->getEnvironment() === "test") {
-            $dotenv = new Dotenv(__DIR__ . '/../');
-            $dotenv->overload();
+            if(file_exists(__DIR__ . '/../.env')) {
+                $dotenv = new Dotenv(__DIR__ . '/../');
+                $dotenv->load();
+            }
         }
 
         $bundles = array(

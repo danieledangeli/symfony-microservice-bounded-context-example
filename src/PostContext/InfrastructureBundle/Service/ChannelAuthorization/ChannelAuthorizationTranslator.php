@@ -20,7 +20,7 @@ class ChannelAuthorizationTranslator
      */
     public function toChannelAuthorizationFromResponse(Response $response)
     {
-        if(200 === $response->getStatusCode()) {
+        if (200 === $response->getStatusCode()) {
             $responseBodyArray = $response->getBody();
 
             return new ChannelAuthorization(
@@ -30,7 +30,7 @@ class ChannelAuthorizationTranslator
             );
         }
 
-        if(404 === $response->getStatusCode()) {
+        if (404 === $response->getStatusCode()) {
             throw new AuthorizationNotFoundException;
         }
 

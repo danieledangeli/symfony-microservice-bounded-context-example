@@ -56,7 +56,7 @@ They started with talk with the product owners and the have identified this scen
 - If we're not able to determinate if a user is authorized to publish or not into a channel, then show to the user a message where he's
 informed that is not possible to publish on this channel in this moment.
 
-- If we're not able to determinate if a channel exists and it's not closed, then show to the user a message where he's
+- If we're not able to determinate if a channel exists and is not closed, then show to the user a message where he's
 informed that is not possible to publish on this channel in this moment.
 
 ###Integrations

@@ -14,6 +14,7 @@ use PostContext\Domain\ValueObjects\ChannelId;
 use PostContext\Domain\ValueObjects\BodyMessage;
 use PostContext\Domain\ValueObjects\MessageId;
 use PostContext\Domain\ValueObjects\PublisherId;
+use PostContext\InfrastructureBundle\Tests\Resources\MockResponsesLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,6 +24,7 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
     private $channelId;
     private $message;
     private $messageId;
+    private $isClosed;
 
     /** @var  Mock */
     private $mock;
@@ -44,13 +46,19 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
     }
 
     /**
-     * @Given exists a channel with id :channelId
+     * @Given exists a :state channel with id :channelId
      */
-    public function existsAChannelWithId($channelId)
+    public function existsAChannelWithId($channelId, $state)
     {
-        $this->channelId = $channelId;
+        $isClosed = $state === "open" ? "false" : "true";
+        $this->isClosed = $isClosed;
 
-        $response = new \GuzzleHttp\Message\Response(200, [], Stream::factory(sprintf("{\"id\" : \"%s\"}", $this->channelId)));
+        $this->channelId = $channelId;
+        $channelResponseTemplate = MockResponsesLocator::getResponseTemplate("channel200response.json");
+        $body = sprintf($channelResponseTemplate, $this->channelId, $this->isClosed);
+
+        $response = new \GuzzleHttp\Message\Response(200, [], Stream::factory($body));
+
         $response->addHeader("Content-Type", "application/json");
         $this->mock->addResponse(
             $response
@@ -192,7 +200,7 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
         $publisherId = new PublisherId($this->publisherId);
 
         $publisher = new Publisher($publisherId);
-        $message = $publisher->publishOnChannel(new Channel(new ChannelId($this->channelId)), new BodyMessage("hello"));
+        $message = $publisher->publishOnChannel(new Channel(new ChannelId($this->channelId), $this->isClosed === "true"), new BodyMessage("hello"));
 
         $reflectionClass = new ReflectionClass(Message::class);
         $reflectionProperty = $reflectionClass->getProperty('messageId');
@@ -217,6 +225,14 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
      */
     public function thePublisherDeleteTheMessage()
     {
+        if($this->mock->count() > 0) {
+            $container = $this->getClient()->getContainer();
+
+            /** @var Client $httpClient */
+            $httpClient = $container->get('post_context.infrastructure.guzzle_http_client');
+            $httpClient->getEmitter()->attach($this->mock);
+        }
+
         $this->getClient()->request(
             "DELETE",
             $this->prepareUrl(sprintf("/api/posts/%s", $this->messageId)),
@@ -285,6 +301,15 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
 
         $collection = $postRepository->get(new MessageId($this->messageId));
         PHPUnit_Framework_Assert::assertCount(1, $collection);
+    }
+
+    /**
+     * @Then the publisher is informed that is not possible to perform action on a closed channel
+     */
+    public function thePublisherIsInformedThatIsNotPossiblePerformActionsOnAClosedChannel()
+    {
+        $response = $this->getResponse();
+        PHPUnit_Framework_Assert::assertEquals(Response::HTTP_FORBIDDEN, $response->getStatus());
     }
 
 }

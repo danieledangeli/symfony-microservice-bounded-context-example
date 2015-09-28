@@ -19,7 +19,7 @@ class ChannelTranslatorTest extends \PHPUnit_Framework_TestCase
     public function testItTranslateResponseToChannel()
     {
         $contents = MockResponsesLocator::getResponseTemplate("channel200response.json");
-        $responseMock = sprintf($contents, "3333"); //the channelId
+        $responseMock = sprintf($contents, "3333", "true"); //the channelId
 
         $response = new Response(200);
         $response->setBody(json_decode($responseMock, true));

@@ -5,7 +5,8 @@ namespace PostContext\InfrastructureBundle\CircuitBreaker;
 use Ejsmont\CircuitBreaker\Storage\Adapter\BaseAdapter;
 use Doctrine\Common\Cache\Cache;
 
-class DoctrineCacheAdapter extends BaseAdapter {
+class DoctrineCacheAdapter extends BaseAdapter
+{
 
     /**
      * Instance to be used by the circuit breaker
@@ -18,14 +19,16 @@ class DoctrineCacheAdapter extends BaseAdapter {
      *
      * @param \Doctrine\Common\Cache\Cache $doctrineCacheInstance
      */
-    public function __construct(Cache $doctrineCacheInstance) {
+    public function __construct(Cache $doctrineCacheInstance)
+    {
         $this->doctrineCacheInstance = $doctrineCacheInstance;
     }
     /**
      * If you provided instance of doctrine cache we assume that it is ready to go.
      * @return boolean
      */
-    protected function checkExtension() {
+    protected function checkExtension()
+    {
         return true;
     }
     /**
@@ -36,7 +39,8 @@ class DoctrineCacheAdapter extends BaseAdapter {
      *
      * @throws \Ejsmont\CircuitBreaker\Storage\StorageException if storage error occurs, handler can not be used
      */
-    protected function load($key) {
+    protected function load($key)
+    {
         return $this->doctrineCacheInstance->fetch($key);
     }
     /**
@@ -49,7 +53,8 @@ class DoctrineCacheAdapter extends BaseAdapter {
      *
      * @throws \Ejsmont\CircuitBreaker\Storage\StorageException if storage error occurs, handler can not be used
      */
-    protected function save($key, $value, $ttl) {
+    protected function save($key, $value, $ttl)
+    {
         $this->doctrineCacheInstance->save($key, $value, $ttl);
     }
 }

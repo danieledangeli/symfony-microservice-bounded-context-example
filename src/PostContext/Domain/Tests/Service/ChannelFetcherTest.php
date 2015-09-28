@@ -32,7 +32,7 @@ class ChannelFetcherTest extends PostContextDomainUnitTest
     public function testItFetchChannelIfExistsInDatabase()
     {
         $channelId = new ChannelId('b12');
-        $storedChannel = new Channel($channelId);
+        $storedChannel = new Channel($channelId, true);
 
         $this->channelRepository->expects($this->once())
             ->method("get")
@@ -45,7 +45,7 @@ class ChannelFetcherTest extends PostContextDomainUnitTest
     public function testItFetchChannelFromGatewayAndAddItToRepository()
     {
         $channelId = new ChannelId("b12");
-        $fetchedFromGatewayChannel = new Channel($channelId);
+        $fetchedFromGatewayChannel = new Channel($channelId, true);
 
         $this->channelRepository->expects($this->once())
             ->method("get")
@@ -65,12 +65,12 @@ class ChannelFetcherTest extends PostContextDomainUnitTest
 
     /**
      * @dataProvider getFailMicroServicesExceptions
-     * @expectedException  \PostContext\Domain\Exception\UnableToCreatePostException
+     * @expectedException  \PostContext\Domain\Exception\UnableToPerformActionOnChannel
      */
     public function testItRaiseUnableToCreatePostExceptionOnMicroServiceException($e)
     {
         $channelId = new ChannelId("12");
-        $fetchedFromGatewayChannel = new Channel($channelId);
+        $fetchedFromGatewayChannel = new Channel($channelId, true);
 
         $this->channelRepository->expects($this->once())
             ->method("get")

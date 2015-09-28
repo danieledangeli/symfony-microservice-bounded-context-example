@@ -8,11 +8,11 @@ use PostContext\Domain\ValueObjects\PublisherId;
 final class DeleteMessageCommand
 {
     public $publisherId;
-    public $postId;
+    public $messageId;
 
     public function __construct(PublisherId $publisherId, MessageId $postId)
     {
         $this->publisherId = $publisherId;
-        $this->postId = $postId;
+        $this->messageId = $postId;
     }
 }

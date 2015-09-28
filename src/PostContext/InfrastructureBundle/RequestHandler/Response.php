@@ -36,7 +36,7 @@ final class Response
     public function getHeader($name)
     {
         $header = isset($this->headers[$name]) ? $this->headers[$name] : null;
-        if(null !== $header && is_array($header)) {
+        if (null !== $header && is_array($header)) {
             return $header[0];
         }
 

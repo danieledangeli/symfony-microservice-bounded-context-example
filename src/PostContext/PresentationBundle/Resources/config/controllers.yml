@@ -1,6 +1,6 @@
 services:
     post_context.controller.create_post:
-        class: PostContext\PresentationBundle\Controller\PostController
+        class: PostContext\PresentationBundle\Controller\MessageController
         arguments:
             - @post_context.handlers.post_handler
             - @jms_serializer

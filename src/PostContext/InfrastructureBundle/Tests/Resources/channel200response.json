@@ -1,5 +1,6 @@
 {
   "id": "%s",
   "description": "Short Description",
-  "created_at": "26/05/2015"
+  "created_at": "26/05/2015",
+  "closed": %s
 }

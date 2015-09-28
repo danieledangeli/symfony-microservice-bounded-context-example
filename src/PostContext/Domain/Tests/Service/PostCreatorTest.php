@@ -83,7 +83,7 @@ class PostCreatorTest extends PostContextDomainUnitTest
 
     /**
      * @dataProvider getFailMicroServicesExceptions
-     * @expectedException \PostContext\Domain\Exception\UnableToCreatePostException
+     * @expectedException \PostContext\Domain\Exception\UnableToPerformActionOnChannel
      */
     public function testItRaiseExceptionIfAuthorizationServiceIsNotAvailable($e)
     {

@@ -3,10 +3,10 @@
 namespace PostContext\PresentationBundle\Tests\Controller;
 
 use PostContext\Application\Command\NewMessageInChannelCommand;
-use PostContext\Application\Handler\PostHandler;
+use PostContext\Application\Handler\MessageHandler;
 use PostContext\Domain\ValueObjects\ChannelId;
 use PostContext\Domain\ValueObjects\PublisherId;
-use PostContext\PresentationBundle\Controller\PostController;
+use PostContext\PresentationBundle\Controller\MessageController;
 use Symfony\Component\HttpFoundation\Request;
 
 class PostControllerTests extends \PHPUnit_Framework_TestCase
@@ -14,16 +14,16 @@ class PostControllerTests extends \PHPUnit_Framework_TestCase
     /** @var  \PHPUnit_Framework_MockObject_MockObject */
     private $postHandlerMock;
 
-    /** @var  PostController */
+    /** @var  MessageController */
     private $postController;
 
     public function setUp()
     {
-        $this->postHandlerMock = $this->getMockBuilder(PostHandler::class)
+        $this->postHandlerMock = $this->getMockBuilder(MessageHandler::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->postController = new PostController($this->postHandlerMock);
+        $this->postController = new MessageController($this->postHandlerMock);
     }
 
     public function testItCreateNewPost()

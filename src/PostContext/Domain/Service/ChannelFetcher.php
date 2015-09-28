@@ -5,7 +5,7 @@ namespace PostContext\Domain\Service;
 use PostContext\Domain\Exception\ChannelNotFoundException;
 use PostContext\Domain\Exception\MicroServiceIntegrationException;
 use PostContext\Domain\Exception\ServiceNotAvailableException;
-use PostContext\Domain\Exception\UnableToCreatePostException;
+use PostContext\Domain\Exception\UnableToPerformActionOnChannel;
 use PostContext\Domain\Gateway\ChannelGatewayInterface;
 use PostContext\Domain\Repository\ChannelRepositoryInterface;
 use PostContext\Domain\ValueObjects\ChannelId;
@@ -44,7 +44,10 @@ class ChannelFetcher
             //B. the channel exist, but we it's impossible to fetch
             //In any case handling a temporary exception
 
-            throw new UnableToCreatePostException(sprintf("Impossible to create post in the channel at the moment %s", $channelId->toNative()));
+            throw new UnableToPerformActionOnChannel(
+                sprintf("Impossible to perform any action in the channel at the moment %s caused by %e",
+                    $channelId->toNative(), $e->getMessage())
+            );
         }
 
         return $channel;

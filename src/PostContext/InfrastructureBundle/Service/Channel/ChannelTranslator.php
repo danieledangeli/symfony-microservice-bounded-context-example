@@ -16,7 +16,7 @@ class ChannelTranslator
     {
         if (200 === $response->getStatusCode()) {
             $contentArray = $response->getBody();
-            return new Channel(new ChannelId($contentArray["id"]));
+            return new Channel(new ChannelId($contentArray["id"]), $contentArray["closed"]);
         }
 
         if (404 === $response->getStatusCode()) {
@@ -25,6 +25,5 @@ class ChannelTranslator
 
 
         throw new UnableToProcessResponseFromService($response);
-
     }
 }

@@ -5,7 +5,6 @@ namespace PostContext\InfrastructureBundle\CircuitBreaker;
 use Ejsmont\CircuitBreaker\CircuitBreakerInterface;
 use Ejsmont\CircuitBreaker\Core\CircuitBreaker as EjsmontCircuitBreaker;
 use Ejsmont\CircuitBreaker\Storage\Decorator\ArrayDecorator;
-
 use Doctrine\Common\Cache\Cache;
 
 /**
@@ -22,7 +21,8 @@ class Factory
      *
      * @return CircuitBreakerInterface
      */
-    public static function getDoctrineCacheInstance(Cache $doctrineCache, $maxFailures = 20, $retryTimeout = 30) {
+    public static function getDoctrineCacheInstance(Cache $doctrineCache, $maxFailures = 20, $retryTimeout = 30)
+    {
         $storage = new ArrayDecorator(new DoctrineCacheAdapter($doctrineCache));
         return new EjsmontCircuitBreaker($storage, $maxFailures, $retryTimeout);
     }

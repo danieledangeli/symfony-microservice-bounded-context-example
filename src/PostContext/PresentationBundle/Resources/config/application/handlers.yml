@@ -1,6 +1,6 @@
 services:
     post_context.handlers.post_handler:
-        class: PostContext\Application\Handler\PostHandler
+        class: PostContext\Application\Handler\MessageHandler
         arguments:
             - @post_context.domain.post_creator
             - @post_context.domain.channel_fetcher

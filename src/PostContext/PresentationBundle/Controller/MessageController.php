@@ -4,7 +4,7 @@ namespace PostContext\PresentationBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use JMS\Serializer\Serializer;
-use PostContext\Application\Handler\PostHandler;
+use PostContext\Application\Handler\MessageHandler;
 use PostContext\PresentationBundle\Adapter\DeleteMessageAdapter;
 use PostContext\PresentationBundle\Adapter\NewMessageCommandAdapter;
 use PostContext\PresentationBundle\Request\DeleteMessageRequest;
@@ -13,17 +13,17 @@ use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as RestController;
 use Symfony\Component\HttpFoundation\Response;
 
-class PostController extends FOSRestController
+class MessageController extends FOSRestController
 {
-    /** @var PostHandler  */
-    private $postHandler;
+    /** @var MessageHandler  */
+    private $messageHandler;
 
     /** @var Serializer  */
     private $serializer;
 
-    public function __construct(PostHandler $postHandler, Serializer $serializer)
+    public function __construct(MessageHandler $postHandler, Serializer $serializer)
     {
-        $this->postHandler = $postHandler;
+        $this->messageHandler = $postHandler;
         $this->serializer = $serializer;
     }
 
@@ -35,7 +35,7 @@ class PostController extends FOSRestController
             new NewMessageRequest(json_decode($request->getContent(), true))
         );
 
-        $post = $this->postHandler->postNewMessage(
+        $post = $this->messageHandler->postNewMessage(
             $postPublisherCommand
         );
 
@@ -50,7 +50,7 @@ class PostController extends FOSRestController
             new DeleteMessageRequest(["post_id" => $postId, "publisher_id" => "899"])
         );
 
-        $this->postHandler->deleteMessage($deleteMessageCommand);
+        $this->messageHandler->deleteMessage($deleteMessageCommand);
 
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }

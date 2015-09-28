@@ -5,7 +5,7 @@ namespace PostContext\Domain\Service;
 use PostContext\Domain\Channel;
 use PostContext\Domain\Exception\MicroServiceIntegrationException;
 use PostContext\Domain\Exception\PublisherNotAuthorizedException;
-use PostContext\Domain\Exception\UnableToCreatePostException;
+use PostContext\Domain\Exception\UnableToPerformActionOnChannel;
 use PostContext\Domain\Gateway\ChannelAuthorizationGatewayInterface;
 use PostContext\Domain\Message;
 use PostContext\Domain\Publisher;
@@ -54,7 +54,7 @@ class MessageCreator
      * @param PublisherId $publisherId
      * @param ChannelId $channelId
      * @return mixed
-     * @throws UnableToCreatePostException
+     * @throws UnableToPerformActionOnChannel
      */
     private function canPublisherPublishInChannel(PublisherId $publisherId, ChannelId $channelId)
     {
@@ -66,7 +66,7 @@ class MessageCreator
             //A. the user can publish in the channel
             //B. the user cannot publish in the channel
 
-            throw new UnableToCreatePostException(
+            throw new UnableToPerformActionOnChannel(
                 sprintf("Impossible to create post in the channel %s at the moment", $channelId)
             );
         }

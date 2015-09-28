@@ -9,12 +9,10 @@ class Channel
     private $channelId;
     private $closed;
 
-    private $posts;
-
-    public function __construct($channelId)
+    public function __construct($channelId, $closed)
     {
         $this->channelId = new ChannelId($channelId);
-        $this->posts = [];
+        $this->closed = $closed;
     }
 
     public function getId()
@@ -22,13 +20,8 @@ class Channel
         return $this->channelId;
     }
 
-    public function addPost(Message $post)
+    public function isClosed()
     {
-        $this->posts[] = $post;
-    }
-
-    public function getPosts()
-    {
-        return $this->posts;
+        return $this->closed;
     }
 }

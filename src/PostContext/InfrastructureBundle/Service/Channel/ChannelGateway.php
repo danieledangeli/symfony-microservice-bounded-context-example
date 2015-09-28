@@ -32,7 +32,7 @@ class ChannelGateway implements ChannelGatewayInterface
      */
     public function getChannel(ChannelId $channelId)
     {
-        if($this->circuitBreaker->isAvailable($this->serviceUniqueName)) {
+        if ($this->circuitBreaker->isAvailable($this->serviceUniqueName)) {
             try {
                 $channel = $this->channelAdapter->toChannel($channelId);
                 $this->circuitBreaker->reportSuccess($this->serviceUniqueName);
@@ -50,7 +50,7 @@ class ChannelGateway implements ChannelGatewayInterface
     {
         $this->circuitBreaker->reportFailure($this->serviceUniqueName);
 
-        if($response->hasConnectionFailed()) {
+        if ($response->hasConnectionFailed()) {
             $this->onServiceNotAvailable("connection failed on channel service");
         }
 

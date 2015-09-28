@@ -112,6 +112,5 @@ class ChannelGatewayTest extends \PHPUnit_Framework_TestCase
         return  $this->getMockBuilder(Channel::class)
             ->disableOriginalConstructor()
             ->getMock();
-
     }
 }

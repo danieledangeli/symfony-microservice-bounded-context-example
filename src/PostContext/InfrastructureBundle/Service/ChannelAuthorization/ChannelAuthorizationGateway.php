@@ -30,7 +30,7 @@ class ChannelAuthorizationGateway implements ChannelAuthorizationGatewayInterfac
         } catch (UnableToProcessResponseFromService $e) {
             $response = $e->getResponse();
 
-            if($response->hasConnectionFailed()) {
+            if ($response->hasConnectionFailed()) {
                 $this->onServiceNotAvailable(sprintf("service channel not available"));
             } else {
                 $this->onServiceFailure(
@@ -41,7 +41,6 @@ class ChannelAuthorizationGateway implements ChannelAuthorizationGatewayInterfac
                 );
             }
         }
-
     }
 
     /**
