@@ -21,7 +21,7 @@ class ChannelAuthorizationTranslator
     public function toChannelAuthorizationFromResponse(Response $response)
     {
         if (200 === $response->getStatusCode()) {
-            $responseBodyArray = $response->getBody();
+            $responseBodyArray = $this->validateAndGetResponseBodyArray($response);
 
             return new ChannelAuthorization(
                 new PublisherId($responseBodyArray["publisher_id"]),
@@ -35,5 +35,22 @@ class ChannelAuthorizationTranslator
         }
 
         throw new UnableToProcessResponseFromService($response);
+    }
+
+    private function validateAndGetResponseBodyArray(Response $response)
+    {
+        $contentArray = $response->getBody();
+
+        if (isset($contentArray["publisher_id"]) &&
+            isset($contentArray["channel_id"]) &&
+            isset($contentArray["authorized"])) {
+
+            return $contentArray;
+        }
+
+        throw new UnableToProcessResponseFromService(
+            $response,
+            "Unable to process response body from channel channel authorization"
+        );
     }
 }

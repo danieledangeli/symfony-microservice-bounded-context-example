@@ -81,6 +81,19 @@ class ChannelAuthorizationTranslatorTest extends \PHPUnit_Framework_TestCase
         $this->channelAuthorizationTranslator->toChannelAuthorizationFromResponse($response);
     }
 
+    /**
+     * @expectedException \PostContext\InfrastructureBundle\Exception\UnableToProcessResponseFromService
+     */
+    public function testItRaiseUnableToProcessResponseIfContentIsNotExpected()
+    {
+        $response = new Response(200);
+        $contents = ["publisher_id" => 1, "channel" => 2, "authorization:" => false];
+
+        $response->setBody($contents);
+
+        $this->channelAuthorizationTranslator->toChannelAuthorizationFromResponse($response);
+    }
+
     public function getNotAcceptableStatusCodes()
     {
         return [

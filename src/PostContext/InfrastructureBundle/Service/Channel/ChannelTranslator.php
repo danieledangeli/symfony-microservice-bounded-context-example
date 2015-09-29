@@ -15,7 +15,7 @@ class ChannelTranslator
     public function toChannelFromResponse(Response $response)
     {
         if (200 === $response->getStatusCode()) {
-            $contentArray = $response->getBody();
+            $contentArray = $this->validateAndGetResponseBodyArray($response);
             return new Channel(new ChannelId($contentArray["id"]), $contentArray["closed"]);
         }
 
@@ -23,7 +23,20 @@ class ChannelTranslator
             throw new ChannelNotFoundException;
         }
 
-
         throw new UnableToProcessResponseFromService($response);
+    }
+
+    private function validateAndGetResponseBodyArray(Response $response)
+    {
+        $contentArray = $response->getBody();
+
+        if (isset($contentArray["id"]) && isset($contentArray["closed"])) {
+            return $contentArray;
+        }
+
+        throw new UnableToProcessResponseFromService(
+            $response,
+            "Unable to process response body from channel service"
+        );
     }
 }

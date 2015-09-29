@@ -48,6 +48,19 @@ class ChannelTranslatorTest extends \PHPUnit_Framework_TestCase
         $this->channelTranslator->toChannelFromResponse($response);
     }
 
+    /**
+     * @expectedException \PostContext\InfrastructureBundle\Exception\UnableToProcessResponseFromService
+     */
+    public function testItRaiseUnableToProcessResponseIfContentIsNotExpected()
+    {
+        $response = new Response(200);
+        $contents = ["c_id" => 1];
+
+        $response->setBody($contents);
+
+        $this->channelTranslator->toChannelFromResponse($response);
+    }
+
     public function getNotAcceptableStatusCodes()
     {
         return [
