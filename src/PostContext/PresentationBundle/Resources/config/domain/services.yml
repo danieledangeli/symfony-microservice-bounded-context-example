@@ -2,7 +2,6 @@ services:
     post_context.domain.channel_fetcher:
         class: PostContext\Domain\Service\ChannelFetcher
         arguments:
-            - @post_context.infrastructure.channel_repository
             - @post_context.infrastructure.channel_gateway
 
     post_context.domain.post_creator:

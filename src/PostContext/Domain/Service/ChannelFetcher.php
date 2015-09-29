@@ -13,31 +13,21 @@ use PostContext\Infrastracture\Gateway\ChannelGateway;
 
 class ChannelFetcher
 {
-    private $channelRepository;
-    private $channelGateway;
-
-    public function __construct(ChannelRepositoryInterface $channelRepository, ChannelGatewayInterface $channelGateway)
+    public function __construct(ChannelGatewayInterface $channelGateway)
     {
-        $this->channelRepository = $channelRepository;
         $this->channelGateway = $channelGateway;
     }
 
     public function fetchChannel(ChannelId $channelId)
     {
-        $channels = $this->channelRepository->get($channelId);
-
-        if ($channels->count() === 0) {
-            $channels->add($this->fetchAndStoreChannelFromGateway($channelId));
-        }
-
-        return $channels->get(0);
+        return $this->fetchChannelFromGateway(($channelId));
     }
 
-    private function fetchAndStoreChannelFromGateway(ChannelId $channelId)
+    private function fetchChannelFromGateway(ChannelId $channelId)
     {
         try {
             $channel = $this->channelGateway->getChannel($channelId);
-            $this->channelRepository->add($channel);
+            return $channel;
         } catch (MicroServiceIntegrationException $e) {
             //the service channel is not available
             //A. the channel doesn't exists
@@ -49,7 +39,5 @@ class ChannelFetcher
                     $channelId->toNative(), $e->getMessage())
             );
         }
-
-        return $channel;
     }
 }
