@@ -6,8 +6,10 @@ use PostContext\Domain\ValueObjects\ChannelId;
 use PostContext\Domain\ValueObjects\BodyMessage;
 use PostContext\Domain\ValueObjects\MessageId;
 use PostContext\Domain\ValueObjects\PublisherId;
+use SimpleBus\Message\Recorder\ContainsRecordedMessages;
+use SimpleBus\Message\Recorder\PrivateMessageRecorderCapabilities;
 
-class Message
+class Message implements ContainsRecordedMessages
 {
     private $messageId;
     private $publisherId;
@@ -49,5 +51,25 @@ class Message
     public function getPublisherId()
     {
         return $this->publisherId;
+    }
+
+    /**
+     * Fetch recorded messages.
+     *
+     * @return object[]
+     */
+    public function recordedMessages()
+    {
+        // TODO: Implement recordedMessages() method.
+    }
+
+    /**
+     * Erase messages that were recorded since the last call to eraseMessages().
+     *
+     * @return void
+     */
+    public function eraseMessages()
+    {
+        // TODO: Implement eraseMessages() method.
     }
 }

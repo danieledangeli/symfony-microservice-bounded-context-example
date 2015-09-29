@@ -9,6 +9,8 @@ use PostContext\PresentationBundle\Adapter\DeleteMessageAdapter;
 use PostContext\PresentationBundle\Adapter\NewMessageCommandAdapter;
 use PostContext\PresentationBundle\Request\DeleteMessageRequest;
 use PostContext\PresentationBundle\Request\NewMessageRequest;
+use SimpleBus\Message\Bus\MessageBus;
+use SimpleBus\Message\Bus\Middleware\MessageBusSupportingMiddleware;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as RestController;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +22,8 @@ class MessageController extends FOSRestController
 
     /** @var Serializer  */
     private $serializer;
+
+    private $middleware;
 
     public function __construct(MessageHandler $postHandler, Serializer $serializer)
     {

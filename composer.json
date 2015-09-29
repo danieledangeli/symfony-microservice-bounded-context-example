@@ -8,7 +8,8 @@
         "friendsofsymfony/rest-bundle": "^1.7",
         "sensio/framework-extra-bundle": "^3.0",
         "guzzlehttp/guzzle": "~5.0",
-        "ejsmont-artur/php-circuit-breaker": "^0.1.0"
+        "ejsmont-artur/php-circuit-breaker": "^0.1.0",
+        "simple-bus/symfony-bridge": "^4.1"
     },
     "autoload": {
         "psr-0": { "PostContext": "src/" }
