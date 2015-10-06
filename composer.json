@@ -12,7 +12,7 @@
         "simple-bus/symfony-bridge": "^4.1"
     },
     "autoload": {
-        "psr-0": { "PostContext": "src/" }
+        "psr-0": { "MessageContext": "src/" }
     },
 
     "require-dev": {

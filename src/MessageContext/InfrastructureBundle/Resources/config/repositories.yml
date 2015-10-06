@@ -1,0 +1,9 @@
+services:
+    message_context.infrastructure.channel_repository:
+        class: MessageContext\InfrastructureBundle\Repository\InMemory\ChannelRepository
+
+    message_context.infrastructure.message_repository:
+        class: MessageContext\InfrastructureBundle\Repository\InMemory\MessageRepository
+
+    message_context.infrastructure.publisher_repository:
+       class: MessageContext\InfrastructureBundle\Repository\InMemory\PublisherRepository

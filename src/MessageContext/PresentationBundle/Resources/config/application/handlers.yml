@@ -1,0 +1,8 @@
+services:
+    message_context.handlers.message_handler:
+        class: MessageContext\Application\Handler\MessageHandler
+        arguments:
+            - @message_context.application.channel_fetcher
+            - @message_context.application.publisher_fetcher
+            - @message_context.application.channel_authorization_fetcher
+            - @message_context.infrastructure.message_repository

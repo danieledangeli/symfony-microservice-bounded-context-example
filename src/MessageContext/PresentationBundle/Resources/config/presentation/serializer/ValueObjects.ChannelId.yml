@@ -1,0 +1,7 @@
+MessageContext\Domain\ValueObjects\ChannelId:
+    exclusion_policy: ALL
+    properties:
+        value:
+            expose: true
+            access_type: property # defaults to property
+            serialized_name: channel_id

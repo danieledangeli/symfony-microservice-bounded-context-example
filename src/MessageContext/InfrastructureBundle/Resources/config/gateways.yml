@@ -1,0 +1,23 @@
+services:
+    message_context.infrastructure.channel_gateway:
+        class: MessageContext\InfrastructureBundle\Service\Channel\ChannelGateway
+        arguments:
+            - @message_context.infrastructure.channel_adapter
+            - @message_context.infrastracture.circuit_breaker
+
+    message_context.infrastructure.channel_authorization_gateway:
+        class: MessageContext\InfrastructureBundle\Service\ChannelAuthorization\ChannelAuthorizationGateway
+        arguments:
+            - @message_context.infrastructure.channel_authorization_adapter
+
+    message_context.infrastructure.channel_adapter:
+        class: MessageContext\InfrastructureBundle\Service\Channel\ChannelAdapter
+        arguments:
+            - @message_context.infrastructure.request_handler
+            - "http://127.0.0.1:8080"
+
+    message_context.infrastructure.channel_authorization_adapter:
+        class: MessageContext\InfrastructureBundle\Service\ChannelAuthorization\ChannelAuthorizationAdapter
+        arguments:
+            - @message_context.infrastructure.request_handler
+            - "http://127.0.0.1:8080"

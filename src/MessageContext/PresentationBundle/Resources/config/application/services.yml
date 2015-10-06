@@ -1,0 +1,15 @@
+services:
+    message_context.application.channel_fetcher:
+        class: MessageContext\Application\Service\ChannelFetcher
+        arguments:
+            - @message_context.infrastructure.channel_gateway
+
+    message_context.application.channel_authorization_fetcher:
+        class: MessageContext\Application\Service\ChannelAuthorizationFetcher
+        arguments:
+            - @message_context.infrastructure.channel_authorization_gateway
+
+    message_context.application.publisher_fetcher:
+        class: MessageContext\Application\Service\PublisherFetcher
+        arguments:
+            - @message_context.infrastructure.publisher_repository

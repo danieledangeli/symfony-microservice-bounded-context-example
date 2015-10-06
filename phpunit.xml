@@ -10,7 +10,7 @@
 >
     <testsuites>
         <testsuite name="Project Test Suite">
-            <directory>src/PostContext/*/Tests</directory>
+            <directory>src/MessageContext/*/Tests</directory>
         </testsuite>
     </testsuites>
 
@@ -25,7 +25,7 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory>../src</directory>
             <exclude>
-                <directory>src/PostContext/*Bundle/Resources</directory>
+                <directory>src/MessageContext/*Bundle/Resources</directory>
             </exclude>
         </whitelist>
     </filter>

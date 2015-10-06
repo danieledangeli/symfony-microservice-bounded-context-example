@@ -7,14 +7,17 @@ use Behat\Symfony2Extension\Driver\KernelDriver;
 use GuzzleHttp\Client;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\Mock;
-use PostContext\Domain\Channel;
-use PostContext\Domain\Message;
-use PostContext\Domain\Publisher;
-use PostContext\Domain\ValueObjects\ChannelId;
-use PostContext\Domain\ValueObjects\BodyMessage;
-use PostContext\Domain\ValueObjects\MessageId;
-use PostContext\Domain\ValueObjects\PublisherId;
-use PostContext\InfrastructureBundle\Tests\Resources\MockResponsesLocator;
+use MessageContext\Domain\Message;
+use MessageContext\Domain\Publisher;
+use MessageContext\Domain\Repository\MessageRepositoryInterface;
+use MessageContext\Domain\ValueObjects\BodyMessage;
+use MessageContext\Domain\ValueObjects\Channel;
+use MessageContext\Domain\ValueObjects\ChannelAuthorization;
+use MessageContext\Domain\ValueObjects\ChannelId;
+use MessageContext\Domain\ValueObjects\MessageId;
+use MessageContext\Domain\ValueObjects\PublisherId;
+use MessageContext\InfrastructureBundle\Repository\InMemory\PublisherRepository;
+use MessageContext\InfrastructureBundle\Tests\Resources\MockResponsesLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -66,7 +69,7 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
     }
 
     /**
-     * @Given the publisher is authorized to publish message on the channel
+     * @Given the publisher is authorized to publish message on that channel
      */
     public function thePublisherIsAuthorizedToPublishMessageOnTheChannel()
     {
@@ -89,7 +92,7 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
             $container = $this->getClient()->getContainer();
 
             /** @var Client $httpClient */
-            $httpClient = $container->get('post_context.infrastructure.guzzle_http_client');
+            $httpClient = $container->get('message_context.infrastructure.guzzle_http_client');
             $httpClient->getEmitter()->attach($this->mock);
         }
 
@@ -98,7 +101,7 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
 
         $this->getClient()->request(
             "POST",
-            $this->prepareUrl(sprintf("/api/posts")),
+            $this->prepareUrl(sprintf("/api/messages")),
             array(),
             array(),
             array(["Accept", "application/json"]),
@@ -117,14 +120,12 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
         PHPUnit_Framework_Assert::assertEquals($this->publisherId, $content["publisher_id"]);
         PHPUnit_Framework_Assert::assertEquals($this->channelId, $content["channel_id"]);
         PHPUnit_Framework_Assert::assertEquals(Response::HTTP_CREATED, $this->getResponse()->getStatus());
-
-
     }
 
     /**
-     * @Given the publisher is not authorized to publish message on the channel
+     * @Given the publisher is not authorized to publish message on that channel
      */
-    public function thePublisherIsNotAuthorizedToPublishMessageOnTheChannel()
+    public function thePublisherIsNotAuthorizedToPublishMessageOnThatChannel()
     {
         $this->mock->addResponse(
             new \GuzzleHttp\Message\Response(200, ["Content-Type" => "application/json"], Stream::factory(
@@ -152,13 +153,13 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
         /** @var Container $container */
         $container = $this->getClient()->getContainer();
 
-        /** @var \PostContext\Domain\Repository\PostRepositoryInterface $postRepository */
-        $postRepository = $container->get("post_context.infrastructure.post_repository");
+        /** @var MessageRepositoryInterface $messageRepository */
+        $messageRepository = $container->get("message_context.infrastructure.message_repository");
 
-        $posts = $postRepository->getAll();
+        $messages = $messageRepository->getAll();
 
-        foreach($posts as $post) {
-            PHPUnit_Framework_Assert::assertNotEquals($this->message, $post->getMessage());
+        foreach($messages as $message) {
+            PHPUnit_Framework_Assert::assertNotEquals($this->message, $message->getMessage());
         }
     }
 
@@ -184,7 +185,7 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
     }
 
     /**
-     * @Given a message with id :messageId on the channel :channelId
+     * @Given exists message with id :messageId on the channel :channelId
      */
     public function aMessageWithIdOnTheChannel($messageId, $channelId)
     {
@@ -198,25 +199,29 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
     public function thePublisherIsTheOwnerOfTheMessage()
     {
         $publisherId = new PublisherId($this->publisherId);
-
+        $channelId = new ChannelId($this->channelId);
         $publisher = new Publisher($publisherId);
-        $message = $publisher->publishOnChannel(new Channel(new ChannelId($this->channelId), $this->isClosed === "true"), new BodyMessage("hello"));
+
+        $message = $publisher->publishOnChannel(
+            new Channel($channelId, false),
+            new ChannelAuthorization($publisherId, $channelId, true),
+            new BodyMessage("hello")
+        );
 
         $reflectionClass = new ReflectionClass(Message::class);
         $reflectionProperty = $reflectionClass->getProperty('messageId');
         $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($message, new MessageId($this->messageId));
 
-        //create the message with message repository
         /** @var Container $container */
         $container = $this->getClient()->getContainer();
 
-        /** @var \PostContext\Domain\Repository\PostRepositoryInterface $postRepository */
-        $postRepository = $container->get("post_context.infrastructure.post_repository");
-        $postRepository->add($message);
+        /** @var MessageRepositoryInterface $messageRepository */
+        $messageRepository = $container->get("message_context.infrastructure.message_repository");
+        $messageRepository->add($message);
 
-        /** @var PublisherRepository $postRepository */
-        $publisherRepository = $container->get("post_context.infrastructure.publisher_repository");
+        /** @var PublisherRepository $messageRepository */
+        $publisherRepository = $container->get("message_context.infrastructure.publisher_repository");
         $publisherRepository->add($publisher);
     }
 
@@ -229,13 +234,13 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
             $container = $this->getClient()->getContainer();
 
             /** @var Client $httpClient */
-            $httpClient = $container->get('post_context.infrastructure.guzzle_http_client');
+            $httpClient = $container->get('message_context.infrastructure.guzzle_http_client');
             $httpClient->getEmitter()->attach($this->mock);
         }
 
         $this->getClient()->request(
             "DELETE",
-            $this->prepareUrl(sprintf("/api/posts/%s", $this->messageId)),
+            $this->prepareUrl(sprintf("/api/messages/%s", $this->messageId)),
             array(),
             array(),
             array(["Accept", "application/json"])
@@ -252,10 +257,10 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
         $response = $this->getResponse();
         PHPUnit_Framework_Assert::assertEquals(Response::HTTP_NO_CONTENT, $response->getStatus());
 
-        /** @var \PostContext\Domain\Repository\PostRepositoryInterface $postRepository */
-        $postRepository = $container->get("post_context.infrastructure.post_repository");
+        /** @var MessageRepositoryInterface $messageRepository */
+        $messageRepository = $container->get("message_context.infrastructure.message_repository");
 
-        $collection = $postRepository->get(new MessageId($this->messageId));
+        $collection = $messageRepository->get(new MessageId($this->messageId));
         PHPUnit_Framework_Assert::assertCount(0, $collection);
     }
 
@@ -275,13 +280,13 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
         /** @var Container $container */
         $container = $this->getClient()->getContainer();
 
-        /** @var \PostContext\Domain\Repository\PostRepositoryInterface $postRepository */
-        $postRepository = $container->get("post_context.infrastructure.post_repository");
-        $postRepository->add($message);
+        /** @var MessageRepositoryInterface $messageRepository */
+        $messageRepository = $container->get("message_context.infrastructure.message_repository");
+        $messageRepository->add($message);
     }
 
     /**
-     * @Then the user is informed that is not the owner of that message
+     * @Then the publisher is informed that is not the owner of that message
      */
     public function theUserIsInformedThatIsNotTheOwnerOfThatMessage()
     {
@@ -296,10 +301,10 @@ class PublisherContext extends KernelDriver implements Context, SnippetAccepting
     {
         $container = $this->getClient()->getContainer();
 
-        /** @var \PostContext\Domain\Repository\PostRepositoryInterface $postRepository */
-        $postRepository = $container->get("post_context.infrastructure.post_repository");
+        /** @var MessageRepositoryInterface $messageRepository */
+        $messageRepository = $container->get("message_context.infrastructure.message_repository");
 
-        $collection = $postRepository->get(new MessageId($this->messageId));
+        $collection = $messageRepository->get(new MessageId($this->messageId));
         PHPUnit_Framework_Assert::assertCount(1, $collection);
     }
 

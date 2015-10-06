@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Dotenv\Dotenv;
 
 $dotenv = new Dotenv(__DIR__ . '/../');
-$dotenv->overload();
+$dotenv->load();
 
 $input = new ArgvInput();
 $kernel = new AppKernel($_SERVER['SYMFONY_ENV'], (bool)$_SERVER['SYMFONY_DEBUG']);

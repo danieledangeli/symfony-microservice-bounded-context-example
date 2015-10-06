@@ -24,8 +24,8 @@ class AppKernel extends Kernel
             new FOS\RestBundle\FOSRestBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
-            new \PostContext\PresentationBundle\PresentationBundle(),
-            new \PostContext\InfrastructureBundle\InfrastructureBundle(),
+            new \MessageContext\PresentationBundle\PresentationBundle(),
+            new \MessageContext\InfrastructureBundle\InfrastructureBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

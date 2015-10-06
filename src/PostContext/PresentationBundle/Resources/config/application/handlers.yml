@@ -1,8 +1,0 @@
-services:
-    post_context.handlers.post_handler:
-        class: PostContext\Application\Handler\MessageHandler
-        arguments:
-            - @post_context.domain.post_creator
-            - @post_context.domain.channel_fetcher
-            - @post_context.domain.publisher_fetcher
-            - @post_context.infrastructure.post_repository
