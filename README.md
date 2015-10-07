@@ -3,7 +3,7 @@
 This is a minimal Symfony distribution
 to implement a bounded context inside a micro-service architecture.
 
-**Plese note**: It's not a DDD proof of concepts, therefore the domain is "pure" and it doesn't reflect a real scenario!!
+**Plese note**: It's not a DDD proof of concepts, therefore the domain is "poor" and it doesn't reflect a real scenario!!
 
 ## The Story
 
