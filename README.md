@@ -3,6 +3,8 @@
 This is a minimal Symfony distribution
 to implement a bounded context inside a micro-service architecture.
 
+*Plese note*: It's not a DDD proof of concepts, therefore the domain is "pure" and it doesn't reflect a real scenario!!
+
 ## The Story
 
 The Development Team have identified the following context inside the application domain:
@@ -100,12 +102,8 @@ This vars needs to be exported in the environment:
     SYMFONY_DEBUG=1
     SYMFONY__SECRET=abcdefg
     SYMFONY__MONOLOG_ACTION_LEVEL=debug
-    SYMFONY__AUTH_SERVICE=http://localhost:8080
-    SYMFONY__CHANNEL_SERVICE=http://localhost:8080
-    SYMFONY__RABBIT_URL=http://localhost:8080
-    SYMFONY__RABBIT_PORT=http://localhost:8080
 
-Or we can just add these variables in a file called .env in the prohect root directory
+Or we can just add these variables in a file called .env in the project root directory
 
 ##Running the tests
 
