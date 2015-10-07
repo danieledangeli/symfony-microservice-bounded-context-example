@@ -13,7 +13,7 @@ class AppKernel extends Kernel
         if($this->getEnvironment() === "test") {
             if(file_exists(__DIR__ . '/../.env')) {
                 $dotenv = new Dotenv(__DIR__ . '/../');
-                $dotenv->load();
+                $dotenv->overload(); //always overload on test env
             }
         }
 
@@ -26,12 +26,11 @@ class AppKernel extends Kernel
 
             new \MessageContext\PresentationBundle\PresentationBundle(),
             new \MessageContext\InfrastructureBundle\InfrastructureBundle(),
+            new Symfony\Bundle\TwigBundle\TwigBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
-            $bundles[] = new Symfony\Bundle\TwigBundle\TwigBundle();
-
         }
 
         return $bundles;

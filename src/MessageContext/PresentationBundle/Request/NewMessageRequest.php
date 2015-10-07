@@ -8,8 +8,10 @@ class NewMessageRequest
 {
     private $requestParameters;
 
-    public function __construct($options)
+    public function __construct($options = null)
     {
+        $options = null !== $options ? $options : [];
+
         $resolver  = new OptionsResolver();
         $resolver->setRequired(['publisher_id', 'channel_id', 'message']);
 

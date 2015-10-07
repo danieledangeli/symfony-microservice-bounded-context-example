@@ -52,9 +52,13 @@ fos_rest:
             'MessageContext\Application\Exception\MessageNotFoundException': HTTP_NOT_FOUND
             'MessageContext\Domain\Exception\ChannelClosedException': HTTP_FORBIDDEN
             'MessageContext\Domain\Exception\MessageNotOwnedByThePublisherException': HTTP_FORBIDDEN
+            'Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException': HTTP_BAD_REQUEST
+            'Symfony\Component\OptionsResolver\Exception\NoSuchOptionException': HTTP_BAD_REQUEST
+            'Symfony\Component\OptionsResolver\Exception\OptionDefinitionException': HTTP_BAD_REQUEST
+            'Symfony\Component\OptionsResolver\Exception\MissingOptionsException': HTTP_BAD_REQUEST
+            'Symfony\Component\OptionsResolver\Exception\MissingOptionsException': HTTP_BAD_REQUEST
+            'MessageContext\Domain\Exception\PublisherIdNotValidException': HTTP_BAD_REQUEST
     allowed_methods_listener: true
-    access_denied_listener:
-        json: true
     body_listener: false
     routing_loader:
         default_format: json

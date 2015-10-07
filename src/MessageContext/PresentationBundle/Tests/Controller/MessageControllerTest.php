@@ -60,11 +60,13 @@ JSON;
         $this->assertEquals('{"id":1}', json_encode($view->getData()));
     }
 
-    public function testPublisherIdIsRequired()
+    /**
+     * @group test
+     * @dataProvider getInvalidNewMessageRequestBody
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\ExceptionInterface
+     */
+    public function testRequiredRequestParameters($requestBody)
     {
-        $requestBody = <<<JSON
-{"publisher_id": "","channel_id": "22222","message": "message"}
-JSON;
 
         $request = $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
@@ -74,13 +76,15 @@ JSON;
             ->method("getContent")
             ->willReturn($requestBody);
 
-        $this->messageHandlerMock->expects($this->once())
-            ->method("postNewMessage")
-            ->with($this->equalTo(new NewMessageInChannelCommand(new PublisherId("3444"), new ChannelId("22222"), new BodyMessage("message"))))
-            ->willReturn(["id" => 1]);
+        $this->messageController->postMessageAction($request);
+    }
 
-        $view = $this->messageController->postMessageAction($request);
-
-        $this->assertEquals(400, $view->getStatusCode());
+    public function getInvalidNewMessageRequestBody()
+    {
+        return [
+            ['"channel_id": "22222","message": "message"}'],
+            ['{"publisher_id": "22222","message": "message"}'],
+            ['{"channel_id": "22222","publisher_id": "1234"}']
+        ];
     }
 }

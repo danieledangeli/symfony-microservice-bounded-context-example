@@ -2,6 +2,6 @@
 
 namespace MessageContext\Domain\Exception;
 
-class MicroServiceIntegrationException extends \Exception
+class MicroServiceIntegrationException extends \Exception implements ExceptionInterface
 {
 }
